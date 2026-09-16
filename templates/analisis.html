@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <title>Sistem Pengolahan Data UKOM</title>
+</head>
+
+<body class="page-analisis">
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+            <span class="brand-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 6.5C10.5 5.3 8.3 4.5 5.5 4.5C4.7 4.5 4 4.6 3.3 4.8V17.3C4 17.1 4.7 17 5.5 17C8.3 17 10.5 17.8 12 19V6.5Z" fill="#1C96D1"/>
+                    <path d="M12 6.5C13.5 5.3 15.7 4.5 18.5 4.5C19.3 4.5 20 4.6 20.7 4.8V17.3C20 17.1 19.3 17 18.5 17C15.7 17 13.5 17.8 12 19V6.5Z" fill="#03A9DD"/>
+                </svg>
+            </span>
+
+            <span class="topbar-title">Sistem Pengolahan Data UKOM</span>
+        </div>
+
+        <div class="btn-logout">
+            <a href="/logout" class="logout-link">
+                Log out
+            </a>
+        </div>
+
+    </header>
+
+    <main class="analisis-main">
+
+        <section class="filter-section">
+
+            <div class="process-section">
+
+                <p class="process-text">
+                    Ada pembaruan data? Jika iya klik tombol berikut terlebih dahulu:
+                </p>
+
+                <button
+                    type="button"
+                    id="btnProsesAnalisis"
+                    class="btn-secondary"
+                >
+                    Proses Analisis
+                </button>
+
+            </div>
+
+            <div class="filter-section-content">
+
+                <h2 class="section-title">
+                    Ingin melihat 3 hasil analisis data? Pilih filter berikut terlebih dahulu:
+                </h2>
+
+                <form id="filterForm" class="filter-form">
+
+                    <div class="filter-grid">
+
+                        <select
+                            id="tahun"
+                            name="tahun"
+                            class="filter-select"
+                        >
+                            <option value="">Pilih Tahun</option>
+                        </select>
+
+                        <select
+                            id="periode"
+                            name="periode"
+                            class="filter-select"
+                            disabled
+                        >
+                            <option value="">Periode</option>
+                        </select>
+
+                        <select
+                            id="institusi"
+                            name="institusi"
+                            class="filter-select"
+                            disabled
+                        >
+                            <option value="">Asal Institusi</option>
+                        </select>
+
+                        <select
+                            id="batch"
+                            name="batch"
+                            class="filter-select"
+                            disabled
+                        >
+                            <option value="">Batch</option>
+                        </select>
+
+                        <button
+                            type="submit"
+                            class="btn-apply"
+                        >
+                            Apply
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <p class="helper-text">
+                    Pilih tahun, periode, asal institusi, dan batch untuk melihat hasil analisis.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="/static/js/analisis.js"></script>
+
+</body>
+</html>

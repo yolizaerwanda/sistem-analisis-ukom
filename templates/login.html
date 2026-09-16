@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Analisis Bimbel UKOM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <span class="brand-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 6.5C10.5 5.3 8.3 4.5 5.5 4.5C4.7 4.5 4 4.6 3.3 4.8V17.3C4 17.1 4.7 17 5.5 17C8.3 17 10.5 17.8 12 19V6.5Z" fill="#1C96D1"/>
+                    <path d="M12 6.5C13.5 5.3 15.7 4.5 18.5 4.5C19.3 4.5 20 4.6 20.7 4.8V17.3C20 17.1 19.3 17 18.5 17C15.7 17 13.5 17.8 12 19V6.5Z" fill="#03A9DD"/>
+                </svg>
+            </span>
+            <span class="topbar-title">Sistem Pengolahan Data UKOM</span>
+        </div>
+    </header>
+
+    <main class="login-area">
+
+        <div class="login-card">
+
+            <h1>Selamat Datang</h1>
+            <p class="subtitle">Silakan masuk untuk mengakses sistem</p>
+
+            {{ if .error }}
+                <p class="error-message">{{ .error }}</p>
+            {{ end }}
+
+            <form action="/login" method="POST" class="login-form">
+
+                <div class="input-icon-wrapper">
+                    <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z" fill="#8CA0B3"/>
+                    </svg>
+                    <input type="text" name="username" placeholder="Username" id="usernameInput">
+                </div>
+
+                <p class="field-error" id="usernameError">
+                    Username tidak boleh kosong
+                </p>
+
+                <div class="input-icon-wrapper">
+                    <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M17 8V7a5 5 0 00-10 0v1a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2v-9a2 2 0 00-2-2zm-8-1a3 3 0 016 0v1H9V7z" fill="#8CA0B3"/>
+                    </svg>
+                    <input type="password" name="password" placeholder="Password" id="passwordInput">
+                    <button type="button" class="toggle-password" id="togglePasswordBtn" onclick="togglePassword()">
+                        <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="#8CA0B3" stroke-width="1.8"/>
+                        </svg>
+                        <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+                            <path d="M3 3l18 18" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M10.6 5.2A11.6 11.6 0 0112 5c7 0 11 7 11 7a15.4 15.4 0 01-3.4 4.2M6.5 6.5C3.6 8.3 1 12 1 12s4 7 11 7c1.3 0 2.5-.2 3.6-.6" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9.5 10a3 3 0 004.2 4.2" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <p class="field-error" id="passwordError">
+                    Password tidak boleh kosong
+                </p>
+
+                <button type="submit" class="login-submit">Log in</button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <script>
+    function togglePassword() {
+        const input = document.getElementById('passwordInput');
+        const btn = document.getElementById('togglePasswordBtn');
+        const eyeOpen = btn.querySelector('.eye-open');
+        const eyeClosed = btn.querySelector('.eye-closed');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            eyeOpen.style.display = 'none';
+            eyeClosed.style.display = 'block';
+        } else {
+            input.type = 'password';
+            eyeOpen.style.display = 'block';
+            eyeClosed.style.display = 'none';
+        }
+    }
+
+        const usernameInput = document.getElementById("usernameInput");
+        const usernameError = document.getElementById("usernameError");
+
+        const passwordInput = document.getElementById("passwordInput");
+        const passwordError = document.getElementById("passwordError");
+
+        usernameInput.addEventListener("input", function () {
+            if (usernameInput.value.trim() === "") {
+                usernameError.style.display = "block";
+            } else {
+                usernameError.style.display = "none";
+            }
+        });
+
+        passwordInput.addEventListener("input", function () {
+            if (passwordInput.value.trim() === "") {
+                passwordError.style.display = "block";
+            } else {
+                passwordError.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

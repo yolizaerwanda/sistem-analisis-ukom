@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <title>
+        Hasil Analisis - Sistem Pengolahan Data UKOM
+    </title>
+</head>
+
+<body class="page-hasil-analisis">
+
+    <header class="topbar">
+
+        <div class="topbar-left">
+
+            <span class="brand-icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 6.5C10.5 5.3 8.3 4.5 5.5 4.5C4.7 4.5 4 4.6 3.3 4.8V17.3C4 17.1 4.7 17 5.5 17C8.3 17 10.5 17.8 12 19V6.5Z" fill="#1C96D1"/>
+                    <path d="M12 6.5C13.5 5.3 15.7 4.5 18.5 4.5C19.3 4.5 20 4.6 20.7 4.8V17.3C20 17.1 19.3 17 18.5 17C15.7 17 13.5 17.8 12 19V6.5Z" fill="#03A9DD"/>
+                </svg>
+            </span>
+
+            <h1 class="topbar-title">
+                Sistem Pengolahan Data UKOM
+            </h1>
+
+        </div>
+
+        <a href="/logout" class="logout-link">
+            Log out
+        </a>
+
+    </header>
+
+    <main class="analisis-main">
+
+        <section class="filter-section">
+
+            <h2 class="section-title">
+                Pilih data analisis
+            </h2>
+
+            <form id="filterForm" class="filter-form">
+
+                <div class="filter-group">
+
+                    <label for="tahun">
+                        Tahun
+                    </label>
+
+                    <select id="tahun" name="tahun" class="filter-select" data-selected="{{ .Result.Tahun }}">
+                        <option value="">
+                            Pilih Tahun
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="periode">
+                        Periode
+                    </label>
+
+                    <select
+                        id="periode"
+                        name="periode"
+                        class="filter-select"
+                        data-selected="{{ .Result.Periode }}"
+                        disabled
+                    >
+                        <option value="">
+                            Pilih Periode
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="institusi">
+                        Asal Institusi
+                    </label>
+
+                    <select
+                        id="institusi"
+                        name="institusi"
+                        class="filter-select"
+                        data-selected="{{ .Result.Institusi }}"
+                        disabled
+                    >
+                        <option value="">
+                            Pilih Asal Institusi
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="filter-group">
+
+                    <label for="batch">
+                        Batch
+                    </label>
+
+                    <select
+                        id="batch"
+                        name="batch"
+                        class="filter-select"
+                        data-selected="{{ .Result.Batch }}"
+                        disabled
+                    >
+                        <option value="">
+                            Pilih Batch
+                        </option>
+                    </select>
+
+                </div>
+
+                <div class="filter-button">
+
+                    <button type="submit" class="btn-apply">
+                        Apply
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        {{ if .error }}
+
+        <section class="error-message">
+
+            {{ .error }}
+
+        </section>
+
+        {{ end }}
+
+        <section class="download-section">
+
+            <button
+                type="button"
+                id="downloadAll"
+                class="btn-download"
+            >
+                Download All
+            </button>
+
+        </section>
+
+        <section class="analysis-result">
+
+            <div class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+
+                        <h3>
+                            Persentase Kehadiran
+                        </h3>
+
+                        <p>
+                            Jumlah peserta :
+                            <strong>
+                                {{ len .Result.Attendance }}
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="result-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    NO.
+                                </th>
+
+                                <th>
+                                    NAMA
+                                </th>
+
+                                <th>
+                                    PERSENTASE KEHADIRAN
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {{ range .Result.Attendance }}
+
+                            <tr>
+
+                                <td>
+                                    {{ .No }}.
+                                </td>
+
+                                <td>
+                                    {{ .Nama }}
+                                </td>
+
+                                <td>
+                                    {{ printf "%.0f%%" .PersentaseKehadiran }}
+                                </td>
+
+                            </tr>
+
+                            {{ else }}
+
+                            <tr>
+
+                                <td colspan="3" class="empty-row">
+                                    Tidak ada peserta dengan
+                                    kehadiran kurang dari 40%.
+                                </td>
+
+                            </tr>
+
+                            {{ end }}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="analysis-card-footer">
+
+                    <button
+                        type="button"
+                        class="copy-button"
+                        data-copy="attendance"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="analysis-card">
+
+                <div class="analysis-card-header">
+
+                    <div>
+
+                        <h3>
+                            Zonasi Peserta
+                        </h3>
+
+                        <p>
+                            Jumlah peserta :
+                            <strong>
+                                {{ .Result.Zona.TotalPeserta }}
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="zona-chart">
+
+                    <canvas
+                        id="zonaChart"
+                        width="300"
+                        height="300"
+                        data-merah="{{ .Result.Zona.JumlahMerah }}"
+                        data-kuning="{{ .Result.Zona.JumlahKuning }}"
+                        data-hijau="{{ .Result.Zona.JumlahHijau }}"
+                    ></canvas>
+
+                </div>
+
+                <div class="zona-summary">
+
+                    <div class="zona-item">
+
+                        <span class="zona-color merah"></span>
+
+                        <span>
+                            Merah
+                        </span>
+
+                        <strong>
+                            {{ .Result.Zona.JumlahMerah }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="zona-item">
+
+                        <span class="zona-color kuning"></span>
+
+                        <span>
+                            Kuning
+                        </span>
+
+                        <strong>
+                            {{ .Result.Zona.JumlahKuning }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="zona-item">
+
+                        <span class="zona-color hijau"></span>
+
+                        <span>
+                            Hijau
+                        </span>
+
+                        <strong>
+                            {{ .Result.Zona.JumlahHijau }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analysis-card-footer">
+
+                    <button
+                        type="button"
+                        class="copy-button"
+                        data-copy="zona"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="analysis-card analysis-card-wide">
+
+                <div class="analysis-card-header">
+
+                    <div>
+
+                        <h3>
+                            Pelaksanaan TO
+                        </h3>
+
+                        <p>
+                            Jumlah peserta :
+                            <strong>
+                                {{ len .Result.TO }}
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="result-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    NO.
+                                </th>
+
+                                <th>
+                                    NAMA
+                                </th>
+
+                                <th>
+                                    KETERANGAN
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {{ range .Result.TO }}
+
+                            <tr>
+
+                                <td>
+                                    {{ .No }}.
+                                </td>
+
+                                <td>
+                                    {{ .Nama }}
+                                </td>
+
+                                <td>
+
+                                    {{ .TotalPengerjaanTO }}
+
+                                    dari
+
+                                    {{ .TotalTO }}
+
+                                    TO
+
+                                </td>
+
+                            </tr>
+
+                            {{ else }}
+
+                            <tr>
+
+                                <td colspan="3" class="empty-row">
+                                    Tidak ada peserta dengan
+                                    pengerjaan TO kurang dari 50%.
+                                </td>
+
+                            </tr>
+
+                            {{ end }}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="analysis-card-footer">
+
+                    <button
+                        type="button"
+                        class="copy-button"
+                        data-copy="to"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="/static/js/hasil-analisis.js"></script>
+
+</body>
+
+</html>
