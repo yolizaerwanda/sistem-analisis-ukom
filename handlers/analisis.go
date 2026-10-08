@@ -38,7 +38,7 @@ func ProcessAnalysis(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
-		"message": "Analisis semua sheet berhasil diproses",
+		"message": "Analisis semua data berhasil diproses",
 	})
 }
 

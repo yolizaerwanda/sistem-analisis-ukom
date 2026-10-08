@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ) {
 
                 alert(
-                    "Silakan pilih Tahun, Periode, Asal Institusi, dan Batch."
+                    "Silakan pilih parameter terlebih dahulu.",
                 );
 
                 return;
@@ -464,11 +464,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     initializeFilter();
 
-    const copyButtons =
-        document.querySelectorAll(
-            ".copy-button"
-        );
-
+    const copyButtons = document.querySelectorAll(".copy-button");
 
     copyButtons.forEach(function (button) {
 
@@ -485,11 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-    const downloadButton =
-        document.getElementById(
-            "downloadAll"
-        );
-
+    const downloadButton = document.getElementById("downloadAll");
 
     if (downloadButton) {
 
@@ -498,7 +490,7 @@ document.addEventListener("DOMContentLoaded", function () {
             function () {
 
                 alert(
-                    "Fitur Copy akan dibuat pada tahap berikutnya."
+                    "Fitur download akan dibuat pada tahap berikutnya."
                 );
 
             }
@@ -539,18 +531,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     data: {
 
-                        labels: [
-                            "Merah",
-                            "Kuning",
-                            "Hijau"
-                        ],
-
                         datasets: [
                             {
                                 data: [
                                     merah,
                                     kuning,
                                     hijau
+                                ],
+                                backgroundColor: [
+                                    "#ff4d4f", 
+                                    "#ffec3d", 
+                                    "#52c41a"  
                                 ]
                             }
                         ]

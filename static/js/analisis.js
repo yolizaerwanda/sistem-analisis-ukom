@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!tahun || !periode || !institusi || !batch) {
 
             alert(
-                "Silakan pilih Tahun, Periode, Asal Institusi, dan Batch."
+                "Silakan pilih parameter terlebih dahulu.",
             );
 
             return;
@@ -322,9 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     btnProsesAnalisis.addEventListener("click", async function () {
 
-        const konfirmasi = confirm(
-            "Apakah Anda yakin ingin memproses seluruh data analisis?"
-        );
+        const konfirmasi = confirm("Apakah yakin ingin memproses seluruh data?");
 
         if (!konfirmasi) {
             return;
@@ -335,7 +333,6 @@ document.addEventListener("DOMContentLoaded", function () {
             btnProsesAnalisis.disabled = true;
             btnProsesAnalisis.textContent = "Memproses...";
 
-
             const response = await fetch(
                 "/analisis/process",
                 {
@@ -343,9 +340,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             );
 
-
             const result = await response.json();
-
 
             if (!response.ok) {
 
@@ -356,12 +351,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
-
             alert(
                 result.message ||
                 "Analisis berhasil diproses."
             );
 
+            fillSelect(periodeSelect, [], "Pilih Periode");
+            fillSelect(institusiSelect, [], "Pilih Asal Institusi");
+            fillSelect(batchSelect, [], "Pilih Batch");
+
+            periodeSelect.disabled = true;
+            institusiSelect.disabled = true;
+            batchSelect.disabled = true;
+
+            await loadTahun();
 
         } catch (error) {
 
@@ -369,9 +372,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             alert(
                 error.message ||
-                "Terjadi kesalahan saat memproses analisis."
+                "Terjadi kesalahan saat memproses analisis.",
             );
-
 
         } finally {
 
@@ -385,5 +387,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     loadTahun();
-
 });

@@ -1,72 +1,25 @@
 package main
 
 import (
-	"net/http"
 	"database/sql"
+	"net/http"
 	"os"
-	"sistem-analisis-ukom/config"
-	"sistem-analisis-ukom/middleware"
-	"sistem-analisis-ukom/handlers"
 
-	"github.com/gin-gonic/gin"
+	"sistem-analisis-ukom/config"
+	"sistem-analisis-ukom/handlers"
+	"sistem-analisis-ukom/middleware"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
-
-func showLogin(c *gin.Context) {
-    errorMessage := c.Query("error")
-
-    c.HTML(200, "login.html", gin.H{
-        "error": errorMessage,
-    })
-}
-
-func processLogin(c *gin.Context) {
-	username := c.PostForm("username")
-	password := c.PostForm("password")
-	
-	if username == "" {
-		c.Redirect(302, "/login?error=Username+tidak+boleh+kosong")
-		return
-	}
-
-	if password == "" {
-		c.Redirect(302, "/login?error=Password+tidak+boleh+kosong")
-		return
-	}
-	
-	db := c.MustGet("db").(*sql.DB)
-
-	userID, success := config.CheckLogin(db, username, password)
-
-	if success {
-		session := sessions.Default(c)
-
-		session.Set("user_id", userID)
-		session.Save()
-
-		c.Redirect(302, "/analisis")
-		return
-	}
-
-	c.Redirect(302, "/login?error=Username+atau+password+salah")
-}
 
 func databaseMiddleware(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("db", db)
 		c.Next()
 	}
-}
-
-func logout(c *gin.Context) {
-    session := sessions.Default(c)
-
-    session.Clear()
-    session.Save()
-
-    c.Redirect(302, "/login")
 }
 
 func main() {
@@ -106,8 +59,10 @@ func main() {
 
 	router.Static("/static", "./static")
 
-	router.GET("/login", showLogin)
-	router.POST("/login", processLogin)
+	router.GET("/login", handlers.ShowLogin)
+	router.POST("/login", handlers.ProcessLogin)
+	router.GET("/logout", handlers.Logout)
+
 	router.GET("/analisis", middleware.AuthRequired(), handlers.ShowAnalisis)
 	router.POST("/analisis/process", middleware.AuthRequired(), handlers.ProcessAnalysis)
 	router.GET("/api/filter/tahun", middleware.AuthRequired(), handlers.GetFilterTahun)
@@ -115,7 +70,6 @@ func main() {
 	router.GET("/api/filter/institusi", middleware.AuthRequired(), handlers.GetFilterInstitusi)
 	router.GET("/api/filter/batch", middleware.AuthRequired(), handlers.GetFilterBatch)
 	router.GET("/analisis/result", middleware.AuthRequired(), handlers.ShowResultAnalisis)
-	router.GET("/logout", logout)
 
 	router.Run(":8080")
 }

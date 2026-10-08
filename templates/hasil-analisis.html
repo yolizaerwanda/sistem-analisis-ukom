@@ -4,9 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
 
     <title>
         Hasil Analisis - Sistem Pengolahan Data UKOM
@@ -32,9 +35,11 @@
 
         </div>
 
-        <a href="/logout" class="logout-link">
-            Log out
-        </a>
+        <div class="btn-logout">
+            <a href="/logout" class="logout-link">
+                Log out
+            </a>
+        </div>
 
     </header>
 
@@ -43,86 +48,85 @@
         <section class="filter-section">
 
             <h2 class="section-title">
-                Pilih data analisis
+                Pilih parameter:
             </h2>
 
             <form id="filterForm" class="filter-form">
 
-                <div class="filter-group">
+                <div class="filter-grid">
+                    <div class="filter-group">
 
-                    <label for="tahun">
-                        Tahun
-                    </label>
+                        <label for="tahun">
+                            Tahun
+                        </label>
 
-                    <select id="tahun" name="tahun" class="filter-select" data-selected="{{ .Result.Tahun }}">
-                        <option value="">
-                            Pilih Tahun
-                        </option>
-                    </select>
+                        <select id="tahun" name="tahun" class="filter-select" data-selected="{{ .Result.Tahun }}">
+                            <option value="">
+                                Pilih Tahun
+                            </option>
+                        </select>
 
-                </div>
+                    </div>
 
-                <div class="filter-group">
+                    <div class="filter-group">
 
-                    <label for="periode">
-                        Periode
-                    </label>
+                        <label for="periode">
+                            Periode
+                        </label>
 
-                    <select
-                        id="periode"
-                        name="periode"
-                        class="filter-select"
-                        data-selected="{{ .Result.Periode }}"
-                        disabled
-                    >
-                        <option value="">
-                            Pilih Periode
-                        </option>
-                    </select>
+                        <select
+                            id="periode"
+                            name="periode"
+                            class="filter-select"
+                            data-selected="{{ .Result.Periode }}"
+                            disabled
+                        >
+                            <option value="">
+                                Pilih Periode
+                            </option>
+                        </select>
 
-                </div>
+                    </div>
 
-                <div class="filter-group">
+                    <div class="filter-group">
 
-                    <label for="institusi">
-                        Asal Institusi
-                    </label>
+                        <label for="institusi">
+                            Asal Institusi
+                        </label>
 
-                    <select
-                        id="institusi"
-                        name="institusi"
-                        class="filter-select"
-                        data-selected="{{ .Result.Institusi }}"
-                        disabled
-                    >
-                        <option value="">
-                            Pilih Asal Institusi
-                        </option>
-                    </select>
+                        <select
+                            id="institusi"
+                            name="institusi"
+                            class="filter-select"
+                            data-selected="{{ .Result.Institusi }}"
+                            disabled
+                        >
+                            <option value="">
+                                Pilih Asal Institusi
+                            </option>
+                        </select>
 
-                </div>
+                    </div>
 
-                <div class="filter-group">
+                    <div class="filter-group">
 
-                    <label for="batch">
-                        Batch
-                    </label>
+                        <label for="batch">
+                            Batch
+                        </label>
 
-                    <select
-                        id="batch"
-                        name="batch"
-                        class="filter-select"
-                        data-selected="{{ .Result.Batch }}"
-                        disabled
-                    >
-                        <option value="">
-                            Pilih Batch
-                        </option>
-                    </select>
+                        <select
+                            id="batch"
+                            name="batch"
+                            class="filter-select"
+                            data-selected="{{ .Result.Batch }}"
+                            disabled
+                        >
+                            <option value="">
+                                Pilih Batch
+                            </option>
+                        </select>
 
-                </div>
-
-                <div class="filter-button">
+                    </div>
 
                     <button type="submit" class="btn-apply">
                         Apply
@@ -266,6 +270,120 @@
                     <div>
 
                         <h3>
+                            Pelaksanaan TO
+                        </h3>
+
+                        <p>
+                            Jumlah peserta :
+                            <strong>
+                                {{ len .Result.TO }}
+                            </strong>
+                            <br>
+                            Total TO :
+                            <strong>
+                                {{ if .Result.TO }}
+                                    {{ with index .Result.TO 0 }}{{ .TotalTO }}{{ end }}
+                                {{ else }}
+                                    0
+                                {{ end }}
+                            </strong>
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table class="result-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    NO.
+                                </th>
+
+                                <th>
+                                    NAMA
+                                </th>
+
+                                <th>
+                                    KETERANGAN
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {{ range .Result.TO }}
+
+                            <tr>
+
+                                <td>
+                                    {{ .No }}.
+                                </td>
+
+                                <td>
+                                    {{ .Nama }}
+                                </td>
+
+                                <td>
+                                    {{ if eq .TotalPengerjaanTO 0 }}
+                                        Belum mengerjakan TO
+                                    {{ else }}
+                                        Hanya mengerjakan {{ .TotalPengerjaanTO }} TO
+                                    {{ end }}
+                                </td>
+
+                            </tr>
+
+                            {{ else }}
+
+                            <tr>
+
+                                <td colspan="3" class="empty-row">
+                                    Tidak ada peserta dengan
+                                    pengerjaan TO kurang dari 50%.
+                                </td>
+
+                            </tr>
+
+                            {{ end }}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <div class="analysis-card-footer">
+
+                    <button
+                        type="button"
+                        class="copy-button"
+                        data-copy="to"
+                    >
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="analysis-card analysis-card-wide">
+
+                <div class="analysis-card-header">
+
+                    <div>
+
+                        <h3>
                             Zonasi Peserta
                         </h3>
 
@@ -355,116 +473,6 @@
                 </div>
 
             </div>
-
-            <div class="analysis-card analysis-card-wide">
-
-                <div class="analysis-card-header">
-
-                    <div>
-
-                        <h3>
-                            Pelaksanaan TO
-                        </h3>
-
-                        <p>
-                            Jumlah peserta :
-                            <strong>
-                                {{ len .Result.TO }}
-                            </strong>
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="table-container">
-
-                    <table class="result-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    NO.
-                                </th>
-
-                                <th>
-                                    NAMA
-                                </th>
-
-                                <th>
-                                    KETERANGAN
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            {{ range .Result.TO }}
-
-                            <tr>
-
-                                <td>
-                                    {{ .No }}.
-                                </td>
-
-                                <td>
-                                    {{ .Nama }}
-                                </td>
-
-                                <td>
-
-                                    {{ .TotalPengerjaanTO }}
-
-                                    dari
-
-                                    {{ .TotalTO }}
-
-                                    TO
-
-                                </td>
-
-                            </tr>
-
-                            {{ else }}
-
-                            <tr>
-
-                                <td colspan="3" class="empty-row">
-                                    Tidak ada peserta dengan
-                                    pengerjaan TO kurang dari 50%.
-                                </td>
-
-                            </tr>
-
-                            {{ end }}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-
-                <div class="analysis-card-footer">
-
-                    <button
-                        type="button"
-                        class="copy-button"
-                        data-copy="to"
-                    >
-                        Copy
-                    </button>
-
-                </div>
-
-            </div>
-
 
         </section>
 

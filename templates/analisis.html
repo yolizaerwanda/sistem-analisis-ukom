@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
 
     <title>Sistem Pengolahan Data UKOM</title>
 </head>
@@ -35,89 +36,74 @@
 
     <main class="analisis-main">
 
-        <section class="filter-section">
+        <section class="main-controls">
 
-            <div class="process-section">
-
-                <p class="process-text">
-                    Ada pembaruan data? Jika iya klik tombol berikut terlebih dahulu:
-                </p>
-
-                <button
-                    type="button"
-                    id="btnProsesAnalisis"
-                    class="btn-secondary"
-                >
-                    Proses Analisis
-                </button>
-
+            <div class="card card-process">
+                <div class="card-body">
+                    <p class="process-text">
+                        Ada pembaruan data? Jika iya, klik tombol berikut terlebih dahulu:
+                    </p>
+                    <button
+                        type="button"
+                        id="btnProsesAnalisis"
+                        class="btn-secondary"
+                    >
+                        Proses Analisis
+                    </button>
+                </div>
             </div>
 
-            <div class="filter-section-content">
+            <div class="card card-filter">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        Pilih parameter untuk melihat hasil analisis:
+                    </h2>
 
-                <h2 class="section-title">
-                    Ingin melihat 3 hasil analisis data? Pilih filter berikut terlebih dahulu:
-                </h2>
+                    <form id="filterForm" class="filter-form">
+                        <div class="filter-grid">
+                            <select id="tahun" name="tahun" class="filter-select">
+                                <option value="">Pilih Tahun</option>
+                            </select>
 
-                <form id="filterForm" class="filter-form">
+                            <select id="periode" name="periode" class="filter-select" disabled>
+                                <option value="">Pilih Periode</option>
+                            </select>
 
-                    <div class="filter-grid">
+                            <select id="institusi" name="institusi" class="filter-select" disabled>
+                                <option value="">Pilih Asal Institusi</option>
+                            </select>
 
-                        <select
-                            id="tahun"
-                            name="tahun"
-                            class="filter-select"
-                        >
-                            <option value="">Pilih Tahun</option>
-                        </select>
+                            <select id="batch" name="batch" class="filter-select" disabled>
+                                <option value="">Pilih Batch</option>
+                            </select>
 
-                        <select
-                            id="periode"
-                            name="periode"
-                            class="filter-select"
-                            disabled
-                        >
-                            <option value="">Periode</option>
-                        </select>
+                            <button type="submit" class="btn-apply">
+                                Apply
+                            </button>
+                        </div>
+                    </form>
 
-                        <select
-                            id="institusi"
-                            name="institusi"
-                            class="filter-select"
-                            disabled
-                        >
-                            <option value="">Asal Institusi</option>
-                        </select>
-
-                        <select
-                            id="batch"
-                            name="batch"
-                            class="filter-select"
-                            disabled
-                        >
-                            <option value="">Batch</option>
-                        </select>
-
-                        <button
-                            type="submit"
-                            class="btn-apply"
-                        >
-                            Apply
-                        </button>
-
-                    </div>
-
-                </form>
-
-                <p class="helper-text">
-                    Pilih tahun, periode, asal institusi, dan batch untuk melihat hasil analisis.
-                </p>
-
+                    <p class="helper-text">
+                        Belum ada hasil analisis yang bisa ditampilkan.
+                    </p>
+                </div>
             </div>
 
         </section>
 
     </main>
+
+    <div class="app-modal-overlay" id="appModalOverlay" hidden>
+        <div class="app-modal" role="dialog" aria-modal="true" aria-labelledby="appModalMessage">
+            <p class="app-modal-message" id="appModalMessage"></p>
+            <div class="app-modal-actions">
+                <button type="button" class="btn-secondary" id="appModalCancel">Batal</button>
+                <button type="button" class="btn-apply" id="appModalConfirm">Ya</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
 
     <script src="/static/js/analisis.js"></script>
 
