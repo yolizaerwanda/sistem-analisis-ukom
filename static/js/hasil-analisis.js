@@ -81,8 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert(
-                "Gagal mengambil data tahun."
+            showToast(
+                "Gagal mengambil data tahun.",
+                "error"
             );
 
         }
@@ -137,8 +138,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert(
-                "Gagal mengambil data periode."
+            showToast(
+                "Gagal mengambil data periode.",
+                "error"
             );
 
         }
@@ -194,8 +196,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert(
-                "Gagal mengambil data institusi."
+            showToast(
+                "Gagal mengambil data institusi.",
+                "error"
             );
 
         }
@@ -256,8 +259,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert(
-                "Gagal mengambil data batch."
+            showToast(
+                "Gagal mengambil data batch.",
+                "error"
             );
 
         }
@@ -401,8 +405,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 !batch
             ) {
 
-                alert(
+                showToast(
                     "Silakan pilih parameter terlebih dahulu.",
+                    "error"
                 );
 
                 return;
@@ -467,35 +472,151 @@ document.addEventListener("DOMContentLoaded", function () {
     const copyButtons = document.querySelectorAll(".copy-button");
 
     copyButtons.forEach(function (button) {
+        button.addEventListener("click", async function () {
+            const cardElement = this.closest(".analysis-card");
+            if (!cardElement) return;
 
-        button.addEventListener(
-            "click",
-            function () {
+            const header = cardElement.querySelector(".analysis-card-header");
+            const footer = cardElement.querySelector(".analysis-card-footer");
 
-                alert(
-                    "Fitur Copy akan dibuat pada tahap berikutnya."
-                );
+            try {
+                if (header) header.style.display = "none";
+                if (footer) footer.style.display = "none";
 
+                const canvas = await html2canvas(cardElement, {
+                    backgroundColor: "#ffffff",
+                    scale: 2
+                });
+
+                if (header) header.style.display = "";
+                if (footer) footer.style.display = "";
+
+                canvas.toBlob(async function (blob) {
+                    if (!blob) {
+                        alert("Gagal membuat gambar.");
+                        return;
+                    }
+
+                    const item = new ClipboardItem({ "image/png": blob });
+                    await navigator.clipboard.write([item]);
+
+                    showToast("Berhasil menyalin gambar", "success");
+                }, "image/png");
+
+            } catch (err) {
+                if (header) header.style.display = "";
+                if (footer) footer.style.display = "";
+
+                console.error("Gagal menyalin gambar:", err);
+                showToast("Gagal menyalin gambar!", "error");
             }
-        );
-
+        });
     });
+
+    function showToast(message, type = "success") {
+        let container = document.getElementById("toastContainer");
+
+        if (!container) {
+            container = document.createElement("div");
+            container.id = "toastContainer";
+            container.className = "toast-container";
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.add("toast-visible");
+        });
+
+        setTimeout(() => {
+            toast.classList.remove("toast-visible");
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
 
     const downloadButton = document.getElementById("downloadAll");
 
     if (downloadButton) {
+        downloadButton.addEventListener("click", async function () {
+            const cards = document.querySelectorAll(".analysis-card");
 
-        downloadButton.addEventListener(
-            "click",
-            function () {
-
-                alert(
-                    "Fitur download akan dibuat pada tahap berikutnya."
-                );
-
+            if (cards.length === 0) {
+                alert("Tidak ada hasil analisis untuk diunduh.");
+                return;
             }
-        );
 
+            downloadButton.disabled = true;
+            const originalText = downloadButton.textContent;
+            downloadButton.textContent = "Memproses ZIP...";
+
+            try {
+                const zip = new JSZip();
+                const imgFolder = zip.folder("analisis_gambar");
+
+                for (let index = 0; index < cards.length; index++) {
+                    const cardElement = cards[index];
+
+                    const header = cardElement.querySelector(".analysis-card-header");
+                    const footer = cardElement.querySelector(".analysis-card-footer");
+                    const titleElement = cardElement.querySelector("h3");
+
+                    let fileName = titleElement 
+                        ? titleElement.textContent.trim().toLowerCase().replace(/\s+/g, "_") 
+                        : `analisis_${index + 1}`;
+
+                    if (header) header.style.display = "none";
+                    if (footer) footer.style.display = "none";
+
+                    const canvas = await html2canvas(cardElement, {
+                        backgroundColor: "#ffffff",
+                        scale: 2
+                    });
+
+                    if (header) header.style.display = "";
+                    if (footer) footer.style.display = "";
+
+                    const imageData = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+
+                    imgFolder.file(`${fileName}.png`, imageData, { base64: true });
+                }
+
+                const elTahun = document.getElementById("tahun");
+                const elPeriode = document.getElementById("periode");
+                const elInstitusi = document.getElementById("institusi");
+                const elBatch = document.getElementById("batch");
+
+                const tahun = elTahun?.getAttribute("data-selected") || elTahun?.value || "";
+                const periode = elPeriode?.getAttribute("data-selected") || elPeriode?.value || "";
+                const asalInstitusi = elInstitusi?.getAttribute("data-selected") || elInstitusi?.value || "";
+                const batch = elBatch?.getAttribute("data-selected") || elBatch?.value || "";
+
+                const rawZipName = `Hasil Analisis Tahun ${tahun} Periode ${periode} ${asalInstitusi} Batch ${batch}`;
+                
+                const zipFileName = rawZipName.replace(/[/\\?%*:|"<>]/g, "").trim() + ".zip";
+
+                const content = await zip.generateAsync({ type: "blob" });
+                
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(content);
+                link.download = zipFileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                URL.revokeObjectURL(link.href);
+
+            } catch (err) {
+                console.error("Gagal mengunduh ZIP:", err);
+                alert("Terjadi kesalahan saat membuat file ZIP.");
+            } finally {
+                downloadButton.disabled = false;
+                downloadButton.textContent = originalText;
+            }
+        });
     }
 
     const zonaCanvas =

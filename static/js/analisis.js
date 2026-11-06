@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert("Gagal mengambil data tahun.");
+            showToast("Gagal mengambil data tahun.", "error");
 
         }
     }
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert("Gagal mengambil data periode.");
+            showToast("Gagal mengambil data periode.", "error");
 
         }
 
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert("Gagal mengambil data institusi.");
+            showToast("Gagal mengambil data institusi.", "error");
 
         }
 
@@ -277,7 +277,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert("Gagal mengambil data batch.");
+            showToast("Gagal mengambil data batch.", "error");
 
         }
 
@@ -296,8 +296,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!tahun || !periode || !institusi || !batch) {
 
-            alert(
+            showToast(
                 "Silakan pilih parameter terlebih dahulu.",
+                "error"
             );
 
             return;
@@ -322,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     btnProsesAnalisis.addEventListener("click", async function () {
 
-        const konfirmasi = confirm("Apakah yakin ingin memproses seluruh data?");
+        const konfirmasi = await showConfirmModal("Apakah yakin ingin memproses seluruh data?");
 
         if (!konfirmasi) {
             return;
@@ -351,7 +352,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             }
 
-            alert(
+            showToast(
                 result.message ||
                 "Analisis berhasil diproses."
             );
@@ -370,9 +371,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.error(error);
 
-            alert(
+            showToast(
                 error.message ||
                 "Terjadi kesalahan saat memproses analisis.",
+                "error"
             );
 
         } finally {
@@ -387,4 +389,52 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     loadTahun();
+
+    function showConfirmModal(message) {
+        return new Promise((resolve) => {
+            const overlay = document.getElementById("appModalOverlay");
+            const messageEl = document.getElementById("appModalMessage");
+            const btnConfirm = document.getElementById("appModalConfirm");
+            const btnCancel = document.getElementById("appModalCancel");
+
+            messageEl.textContent = message;
+            overlay.hidden = false;
+
+            function cleanup(result) {
+                overlay.hidden = true;
+                btnConfirm.removeEventListener("click", onConfirm);
+                btnCancel.removeEventListener("click", onCancel);
+                resolve(result);
+            }
+
+            function onConfirm() {
+                cleanup(true);
+            }
+
+            function onCancel() {
+                cleanup(false);
+            }
+
+            btnConfirm.addEventListener("click", onConfirm);
+            btnCancel.addEventListener("click", onCancel);
+        });
+    }
+
+    function showToast(message, type = "success") {
+        const container = document.getElementById("toastContainer");
+
+        const toast = document.createElement("div");
+        toast.className = "toast toast-" + type;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.classList.add("toast-visible");
+        });
+
+        setTimeout(() => {
+            toast.classList.remove("toast-visible");
+            setTimeout(() => toast.remove(), 250);
+        }, 3500);
+    }
 });
