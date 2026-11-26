@@ -28,51 +28,64 @@
 
         <div class="login-card">
 
-            <h1>Selamat Datang</h1>
-            <p class="subtitle">Silakan masuk untuk mengakses sistem</p>
+            <div class="login-header">
+                <h1>Selamat Datang</h1>
+                <p class="subtitle">Silakan masuk untuk mengakses sistem</p>
+            </div>
 
             {{ if .error }}
-                <p class="error-message">{{ .error }}</p>
+                <p class="error-message" role="alert">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                    <span>{{ .error }}</span>
+                </p>
             {{ end }}
 
-            <form action="/login" method="POST" class="login-form">
+            <form action="/login" method="POST" class="login-form" id="loginForm" novalidate>
 
-                <div class="input-icon-wrapper">
-                    <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z" fill="#8CA0B3"/>
-                    </svg>
-                    <input type="text" name="username" placeholder="Username" id="usernameInput">
+                <div class="form-group">
+                    <label class="form-label" for="usernameInput">Username</label>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.6-9.8 4.9v2.5h19.6v-2.5c0-3.3-6.5-4.9-9.8-4.9z" fill="currentColor"/>
+                        </svg>
+                        <input type="text" name="username" placeholder="Masukkan username" id="usernameInput"
+                               autocomplete="username" aria-describedby="usernameError">
+                    </div>
+                    <p class="field-error" id="usernameError">Username tidak boleh kosong</p>
                 </div>
 
-                <p class="field-error" id="usernameError">
-                    Username tidak boleh kosong
-                </p>
-
-                <div class="input-icon-wrapper">
-                    <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M17 8V7a5 5 0 00-10 0v1a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2v-9a2 2 0 00-2-2zm-8-1a3 3 0 016 0v1H9V7z" fill="#8CA0B3"/>
-                    </svg>
-                    <input type="password" name="password" placeholder="Password" id="passwordInput">
-                    <button type="button" class="toggle-password" id="togglePasswordBtn" onclick="togglePassword()">
-                        <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="12" cy="12" r="3" stroke="#8CA0B3" stroke-width="1.8"/>
+                <div class="form-group">
+                    <label class="form-label" for="passwordInput">Password</label>
+                    <div class="input-icon-wrapper has-toggle">
+                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M17 8V7a5 5 0 00-10 0v1a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2v-9a2 2 0 00-2-2zm-8-1a3 3 0 016 0v1H9V7z" fill="currentColor"/>
                         </svg>
-                        <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;">
-                            <path d="M3 3l18 18" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round"/>
-                            <path d="M10.6 5.2A11.6 11.6 0 0112 5c7 0 11 7 11 7a15.4 15.4 0 01-3.4 4.2M6.5 6.5C3.6 8.3 1 12 1 12s4 7 11 7c1.3 0 2.5-.2 3.6-.6" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9.5 10a3 3 0 004.2 4.2" stroke="#8CA0B3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
+                        <input type="password" name="password" placeholder="Masukkan password" id="passwordInput"
+                               autocomplete="current-password" aria-describedby="passwordError">
+                        <button type="button" class="toggle-password" id="togglePasswordBtn"
+                                onclick="togglePassword()" aria-label="Tampilkan password" aria-pressed="false">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
+                            </svg>
+                            <svg class="eye-icon eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;" aria-hidden="true">
+                                <path d="M3 3l18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M10.6 5.2A11.6 11.6 0 0112 5c7 0 11 7 11 7a15.4 15.4 0 01-3.4 4.2M6.5 6.5C3.6 8.3 1 12 1 12s4 7 11 7c1.3 0 2.5-.2 3.6-.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9.5 10a3 3 0 004.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="field-error" id="passwordError">Password tidak boleh kosong</p>
                 </div>
 
-                <p class="field-error" id="passwordError">
-                    Password tidak boleh kosong
-                </p>
-
-                <button type="submit" class="login-submit">Log in</button>
+                <button type="submit" class="login-submit" id="loginSubmitBtn">Masuk</button>
 
             </form>
+
+            <p class="login-help">Belum punya akun? Hubungi admin sistem.</p>
 
         </div>
 
@@ -89,12 +102,19 @@
             input.type = 'text';
             eyeOpen.style.display = 'none';
             eyeClosed.style.display = 'block';
+            btn.setAttribute('aria-label', 'Sembunyikan password');
+            btn.setAttribute('aria-pressed', 'true');
         } else {
             input.type = 'password';
             eyeOpen.style.display = 'block';
             eyeClosed.style.display = 'none';
+            btn.setAttribute('aria-label', 'Tampilkan password');
+            btn.setAttribute('aria-pressed', 'false');
         }
     }
+
+        const loginForm = document.getElementById("loginForm");
+        const submitBtn = document.getElementById("loginSubmitBtn");
 
         const usernameInput = document.getElementById("usernameInput");
         const usernameError = document.getElementById("usernameError");
@@ -102,19 +122,41 @@
         const passwordInput = document.getElementById("passwordInput");
         const passwordError = document.getElementById("passwordError");
 
+        function setInvalid(input, errorEl, invalid) {
+            errorEl.style.display = invalid ? "block" : "none";
+            input.setAttribute("aria-invalid", invalid ? "true" : "false");
+            input.closest(".input-icon-wrapper").classList.toggle("is-invalid", invalid);
+        }
+
         usernameInput.addEventListener("input", function () {
-            if (usernameInput.value.trim() === "") {
-                usernameError.style.display = "block";
-            } else {
-                usernameError.style.display = "none";
-            }
+            setInvalid(usernameInput, usernameError, usernameInput.value.trim() === "");
         });
 
         passwordInput.addEventListener("input", function () {
-            if (passwordInput.value.trim() === "") {
-                passwordError.style.display = "block";
-            } else {
-                passwordError.style.display = "none";
+            setInvalid(passwordInput, passwordError, passwordInput.value.trim() === "");
+        });
+
+        loginForm.addEventListener("submit", function (e) {
+            const usernameEmpty = usernameInput.value.trim() === "";
+            const passwordEmpty = passwordInput.value.trim() === "";
+
+            setInvalid(usernameInput, usernameError, usernameEmpty);
+            setInvalid(passwordInput, passwordError, passwordEmpty);
+
+            if (usernameEmpty || passwordEmpty) {
+                e.preventDefault();
+                (usernameEmpty ? usernameInput : passwordInput).focus();
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="login-spinner" aria-hidden="true"></span><span>Memproses…</span>';
+        });
+
+        window.addEventListener("pageshow", function (e) {
+            if (e.persisted) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Masuk";
             }
         });
     </script>

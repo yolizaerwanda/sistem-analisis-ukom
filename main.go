@@ -63,7 +63,11 @@ func main() {
 	router.POST("/login", handlers.ProcessLogin)
 	router.GET("/logout", handlers.Logout)
 
-	router.GET("/analisis", middleware.AuthRequired(), handlers.ShowAnalisis)
+	// Halaman Analisis kini memakai template yang sama dengan hasil analisis.
+	// Tanpa parameter, template menampilkan keadaan "belum ada hasil".
+	router.GET("/analisis", middleware.AuthRequired(), func(c *gin.Context) {
+		c.HTML(http.StatusOK, "hasil-analisis.html", gin.H{})
+	})
 	router.POST("/analisis/process", middleware.AuthRequired(), handlers.ProcessAnalysis)
 	router.GET("/api/filter/tahun", middleware.AuthRequired(), handlers.GetFilterTahun)
 	router.GET("/api/filter/periode", middleware.AuthRequired(), handlers.GetFilterPeriode)
